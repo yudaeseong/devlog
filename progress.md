@@ -20,3 +20,10 @@
 - 검증: 1회 (실패 단계 없음)
 - 하네스 개입: 없음 (이전 세션의 guard-bash 차단 로그 한 줄이 커밋되지 않은 채 남아 있어 이번 커밋에 함께 넣음)
 - 다음 세션에 알려줄 것: 루트 `src/app/not-found.tsx` 가 미매칭 URL 과 `notFound()` 호출을 모두 처리한다. 글 상세 등에서 `notFound()` 를 쓰면 이 화면이 나온다. 404 본문은 `flex-1` main 패턴을 쓰고 `min-h-screen` 은 쓰지 않는다 (푸터가 첫 화면 밖으로 밀림).
+
+## 세션 2026-09-30 · F003 회원가입
+- 결과: 완료
+- 평가: FAIL 0회 → PASS (반드시 고칠 것 없음. 지적: 명세가 정한 중복 이메일 문구 "이미 가입된 이메일이에요" 가 F004 수용 기준 "이미 사용 중인 이메일이에요" 와 충돌 → F004 문구로 바꾸고 중복 가입 테스트는 F003 에서 빼서 F004 로 넘김. docs/evals/F003.md 는 변경 전 테스트 기준으로 쓰여 있음)
+- 검증: 1회 (실패 단계 없음)
+- 하네스 개입: 없음 (Bash 로 파일을 쓰려다 자동 모드 분류기 일시 오류 1회 → Write 도구로 진행)
+- 다음 세션에 알려줄 것: 중복 가입(F004)은 구현이 이미 되어 있다(`src/lib/auth/queries.ts` 의 `DuplicateUserError`, UNIQUE 위반 메시지 문자열로 컬럼 구분). F004 는 테스트를 먼저 쓰면 바로 통과할 수 있으니, 대소문자만 다른 이메일·닉네임(NOCASE) 케이스까지 테스트로 확인할 것. 세션은 `getCurrentUser()`(`src/lib/auth/session.ts`), 쿠키 `devlog_session`, DB 에는 SHA-256 해시만. SiteHeader 가 cookies() 를 써서 모든 페이지가 동적 렌더링된다. 가입 후 헤더에는 닉네임만 보이고 '로그아웃' 은 F005/F006 에서 추가. `e2e/helpers.ts` 에 `uniqueUser()`, `signUp()` 있음. browser.newContext() 를 쓰는 테스트는 "step id not found" 리포터 잡음이 나오지만 무해.

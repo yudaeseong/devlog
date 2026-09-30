@@ -54,9 +54,9 @@
       "depends_on": [
         "F001"
       ],
-      "passes": false,
-      "verified_at": null,
-      "test_sha256": null
+      "passes": true,
+      "verified_at": "2026-09-30T06:27:07.269Z",
+      "test_sha256": "60fb32b25e2d6cb90832f12cd1783e4c1a1f4216c57c9d1c9b8b47e652c0860c"
     },
     {
       "id": "F004",
