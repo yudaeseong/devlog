@@ -1,0 +1,5 @@
+{"ts":"2026-09-30T05:40:23.765Z","hook":"guard-bash","action":"block","rule":"feature-list-shell-write","tool":"Bash","agent":"main","session":"5d57d3c6-6e93-4adf-ab0f-a8cd7699bc8c"}
+{"ts":"2026-09-30T05:41:51.246Z","hook":"lint-on-edit","action":"feedback","rule":"eslint","count":2,"session":"5d57d3c6-6e93-4adf-ab0f-a8cd7699bc8c"}
+{"ts":"2026-09-30T05:42:17.526Z","hook":"stop-gate","action":"block","rule":"stop-gate","check":"린트","session":"5d57d3c6-6e93-4adf-ab0f-a8cd7699bc8c"}
+{"ts":"2026-09-30T05:45:47.280Z","hook":"stop-gate","action":"block","rule":"stop-gate","check":"린트","session":"5d57d3c6-6e93-4adf-ab0f-a8cd7699bc8c"}
+{"ts":"2026-09-30T05:46:12.261Z","hook":"guard-bash","action":"block","rule":"feature-list-shell-write","tool":"Bash","agent":"main","session":"5d57d3c6-6e93-4adf-ab0f-a8cd7699bc8c"}

@@ -28,7 +28,7 @@ if (changed.length === 0) {
 const node = (args) => spawnSync(process.execPath, args, { cwd: ROOT, encoding: "utf8", env: { ...process.env, NEXT_TELEMETRY_DISABLED: "1" } });
 const checks = [
   ["타입 검사", [join(ROOT, "node_modules", "typescript", "bin", "tsc"), "--noEmit", "--pretty", "false"]],
-  ["린트", [join(ROOT, "node_modules", "eslint", "bin", "eslint.js"), ".", "--format", "unix"]],
+  ["린트", [join(ROOT, "node_modules", "eslint", "bin", "eslint.js"), "."]],
   ["단위 테스트", [join(ROOT, "node_modules", "vitest", "vitest.mjs"), "run", "--reporter", "dot"]],
 ];
 
