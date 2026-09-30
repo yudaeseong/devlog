@@ -75,6 +75,82 @@ describe("checkBashCommand", () => {
   ])("허용한다: %s", (cmd) => {
     expect(checkBashCommand(cmd)).toEqual({ allow: true });
   });
+
+  // H002: '>' 가 있기만 하면 feature_list.json 쓰기로 오탐했다. 실제 쓰기 대상만 막는다.
+  describe("feature-list-shell-write (H002)", () => {
+    it.each([
+      "cat feature_list.json 2>&1 | head",
+      "cat feature_list.json 2>/dev/null",
+      "node -e \"const f = require('./feature_list.json'); console.log(f.features.length)\" 2>/dev/null",
+      "node -e \"console.log(require('./feature_list.json').features.filter(f => f.passes).length > 0)\"",
+      "grep '\"passes\": true' feature_list.json > /tmp/passed.txt",
+      "jq '.features[] | select(.passes)' feature_list.json > out.json",
+      "cp feature_list.json /tmp/backup.json",
+      "cat > docs/notes.md <<'EOF'\nfeature_list.json 은 verify 만 고친다 > 직접 수정 금지\nEOF",
+      "cat <<EOF > progress.md\n- feature_list.json 확인\nEOF\ngit status",
+      "npm run verify -- F002 > verify.log 2>&1",
+      "git diff feature_list.json | tee /tmp/diff.txt",
+    ])("허용한다: %s", (cmd) => {
+      expect(checkBashCommand(cmd)).toEqual({ allow: true });
+    });
+
+    it.each([
+      "echo {} > feature_list.json",
+      "echo {} >> ./feature_list.json",
+      "jq '.features[0].passes = true' feature_list.json > tmp.json && mv tmp.json feature_list.json",
+      "cat x.json > \"feature_list.json\"",
+      "echo {} &> feature_list.json",
+      "echo {} >| feature_list.json",
+      "echo {} 2>&1 >feature_list.json",
+      "cat x.json | tee feature_list.json",
+      "cat x.json | tee -a /c/Users/O/devlog/feature_list.json",
+      "sed -i 's/false/true/' feature_list.json",
+      "sed -i.bak -e 's/false/true/' feature_list.json",
+      "perl -pi -e 's/false/true/' feature_list.json",
+      "mv feature_list.json old.json",
+      "cp /tmp/x.json feature_list.json",
+      "cp /tmp/feature_list.json .",
+      "rm feature_list.json",
+      "F=feature_list.json; echo {} > $F",
+      "node -e \"require('fs').writeFileSync('feature_list.json', '{}')\"",
+      "node <<'EOF'\nconst fs = require('fs');\nfs.writeFileSync('feature_list.json', '{}');\nEOF",
+      "python -c \"open('feature_list.json', 'w').write('{}')\"",
+      "echo \"a\\\" > b\" > feature_list.json",
+    ])("막는다: %s", (cmd) => {
+      expect(checkBashCommand(cmd)).toMatchObject({ allow: false, rule: "feature-list-shell-write" });
+    });
+  });
+
+  // H002 와 같은 방식의 오탐이 disable-hooks 에도 있었다.
+  describe("disable-hooks (H002)", () => {
+    it.each([
+      "cat .claude/settings.json 2>&1 | head",
+      "ls .claude/hooks/ 2>/dev/null",
+      "grep -n disableAllHooks .claude/settings.json",
+      "cp .claude/hooks/stop-gate.mjs /tmp/stop-gate.mjs",
+      "cat > docs/harness/notes.md <<'EOF'\n.claude/hooks/ 는 사람이 고친다 > 에이전트 금지\nEOF",
+    ])("허용한다: %s", (cmd) => {
+      expect(checkBashCommand(cmd)).toEqual({ allow: true });
+    });
+
+    it.each([
+      "echo '{\"disableAllHooks\":true}' > .claude/settings.json",
+      "echo '{\"disableAllHooks\":true}' > .claude/settings.local.json",
+      "echo '{\"disableAllHooks\":true}' > ~/.claude/settings.json",
+      "sed -i 's/guard-bash/noop/' .claude/settings.json",
+      "echo 'process.exit(0)' | tee .claude/hooks/guard-bash.mjs",
+      "cp /tmp/empty.mjs .claude/hooks/guard-bash.mjs",
+      "mv .claude/hooks/guard-bash.mjs /tmp/",
+      "rm .claude/hooks/guard-bash.mjs",
+      "node -e \"require('fs').writeFileSync('.claude/settings.json', '{}')\"",
+    ])("막는다: %s", (cmd) => {
+      expect(checkBashCommand(cmd)).toMatchObject({ allow: false, rule: "disable-hooks" });
+    });
+
+    it("유지보수 모드에서는 허용한다", () => {
+      expect(checkBashCommand("rm .claude/hooks/old.mjs", { maintenance: true })).toEqual({ allow: true });
+    });
+  });
 });
 
 describe("checkTestContent", () => {
