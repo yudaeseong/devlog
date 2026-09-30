@@ -1,0 +1,46 @@
+{
+  "name": "devlog",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "setup": "node scripts/harness/setup.mjs",
+    "dev": "next dev",
+    "predev": "node scripts/db-migrate.mjs",
+    "build": "next build",
+    "prebuild": "node scripts/db-migrate.mjs",
+    "start": "next start",
+    "db:migrate": "node scripts/db-migrate.mjs",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:eval": "playwright test --config playwright.eval.config.ts",
+    "check": "npm run typecheck && npm run lint && npm run test",
+    "verify": "node scripts/harness/verify-feature.mjs",
+    "progress": "node scripts/harness/progress.mjs",
+    "metrics": "node scripts/harness/metrics.mjs",
+    "harness:install": "node scripts/install-claude-config.mjs"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.18.0",
+    "bcryptjs": "^3.0.3",
+    "next": "16.3.7",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.0",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^24.19.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.7",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^5.0.2"
+  },
+  "engines": {
+    "node": ">=22.13"
+  }
+}
